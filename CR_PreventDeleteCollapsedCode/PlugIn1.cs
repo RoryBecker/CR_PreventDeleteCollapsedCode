@@ -75,7 +75,8 @@ namespace CR_PreventDeleteCollapsedCode
             }
             bool KeyIsNumber = ea.KeyCode >= 0x30 && ea.KeyCode <= 0x39;
             bool KeyIsLetter = ea.KeyCode >= 0x41 && ea.KeyCode <= 0x5a;
-            return (KeyIsNumber || KeyIsLetter);
+            bool KeyIsPunctuation = ea.KeyCode >= 186 && ea.KeyCode <= 222;
+            return (KeyIsNumber || KeyIsLetter || KeyIsPunctuation);
         }
         #endregion
         #region FinalizePlugIn
