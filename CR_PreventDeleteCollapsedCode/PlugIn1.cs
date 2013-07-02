@@ -26,7 +26,8 @@ namespace CR_PreventDeleteCollapsedCode
             // Exit if key is not Delete or Ctrl+X (Clipboard Cut).
             if (!ea.IsDelete 
                 && !(ea.KeyCode == (int)Keys.X && ea.CtrlKeyDown)
-                && !(ea.KeyCode == (int)Keys.Back))
+                && !(ea.KeyCode == (int)Keys.Back)
+                && !KeyIsVisible(ea))
                 return;
             
             // Exit if we have no Active Document.
@@ -64,6 +65,17 @@ namespace CR_PreventDeleteCollapsedCode
             // return true if count > 0 
             return collapsed.Any();
 
+        }
+        private bool KeyIsVisible(KeyPressedEventArgs ea)
+        {
+            if (ea.CtrlKeyDown || ea.AltKeyDown)
+            {
+                // Return false since ctrl and alt modifiers prevent printing.
+                return false;
+            }
+            bool KeyIsNumber = ea.KeyCode >= 0x30 && ea.KeyCode <= 0x39;
+            bool KeyIsLetter = ea.KeyCode >= 0x41 && ea.KeyCode <= 0x5a;
+            return (KeyIsNumber || KeyIsLetter);
         }
         #endregion
         #region FinalizePlugIn
