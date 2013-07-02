@@ -24,7 +24,9 @@ namespace CR_PreventDeleteCollapsedCode
         void EventNexus_KeyPressed(KeyPressedEventArgs ea)
         {
             // Exit if key is not Delete or Ctrl+X (Clipboard Cut).
-            if ((!ea.IsDelete && !(ea.KeyCode == (int)Keys.X && ea.CtrlKeyDown)))
+            if (!ea.IsDelete 
+                && !(ea.KeyCode == (int)Keys.X && ea.CtrlKeyDown)
+                && !(ea.KeyCode == (int)Keys.Back))
                 return;
             
             // Exit if we have no Active Document.
