@@ -18,18 +18,56 @@ namespace CR_PreventDeleteCollapsedCode
         {
             base.InitializePlugIn();
 
-            //
-            // TODO: Add your initialization code here.
-            //
+            EventNexus.KeyPressed += EventNexus_KeyPressed;
+        }
+
+        void EventNexus_KeyPressed(KeyPressedEventArgs ea)
+        {
+            // Exit if key is not Delete or Ctrl+X (Clipboard Cut).
+            if ((!ea.IsDelete && !(ea.KeyCode == (int)Keys.X && ea.CtrlKeyDown)))
+                return;
+            
+            // Exit if we have no Active Document.
+            TextDocument ActiveDoc = CodeRush.Documents.ActiveTextDocument;
+            if (ActiveDoc == null)
+                return;
+
+            // Exit if Editor does not have focus.
+            if (!CodeRush.Editor.HasFocus)
+                return;
+
+            // Exit if Selection does not contain collapsed code.
+            if (!SelectionContainsCollapsedCode())
+                return;
+
+            // All criteria met. Eat Key.
+            ea.EatKey();
+        }
+        private bool SelectionContainsCollapsedCode()
+        {
+            
+            TextDocument ActiveDoc = CodeRush.Documents.ActiveTextDocument;
+            SourceRange Selection;
+            
+            // Get Selection to Selection
+            var Success = ActiveDoc.GetSelection(out Selection);
+            
+            // return false if no Selection.
+            if (!Success)
+                return false;
+            
+            // Get Enumerable of Collapsed Code in selection
+            var collapsed = ActiveDoc.GetCollapsibleRegions(GetCollapsibleRegionFlags.IntersectsRange | GetCollapsibleRegionFlags.CollapsedRegionsOnly, Selection);
+            
+            // return true if count > 0 
+            return collapsed.Any();
+
         }
         #endregion
         #region FinalizePlugIn
         public override void FinalizePlugIn()
         {
-            //
-            // TODO: Add your finalization code here.
-            //
-
+            EventNexus.KeyPressed -= EventNexus_KeyPressed;
             base.FinalizePlugIn();
         }
         #endregion
